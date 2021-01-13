@@ -1,5 +1,10 @@
 import { Context, Next } from 'koa';
 import { renderToString } from 'react-dom/server';
+import {
+  createElement as createReactElement,
+  ReactElement,
+  Fragment,
+} from 'react';
 
 import { Options } from './Options';
 import { compilePage } from './compilePage';
@@ -9,11 +14,12 @@ import { compilePage } from './compilePage';
  *
  * @param options Коллекция настроек middleware.
  */
-export const createMiddleware = (options: Options) => {
+export const createMiddleware = (options: Options = {}) => {
   const {
     createElement,
     modifyElement,
     renderElement,
+    modifyContent,
     createPage,
     modifyPage,
   } = options;
@@ -25,7 +31,9 @@ export const createMiddleware = (options: Options) => {
       context.throw(405);
     }
 
-    let element = await Promise.resolve(createElement(context));
+    let element = createElement
+      ? await Promise.resolve(createElement(context))
+      : (createReactElement(Fragment) as ReactElement);
 
     if (element === false) {
       return next();
@@ -39,9 +47,17 @@ export const createMiddleware = (options: Options) => {
       return next();
     }
 
-    const content = renderElement
+    let content = renderElement
       ? await Promise.resolve(renderElement(element, context))
       : renderToString(element);
+
+    if (content === false) {
+      return next();
+    }
+
+    if (modifyContent) {
+      content = await Promise.resolve(modifyContent(content, context));
+    }
 
     if (content === false) {
       return next();
@@ -53,23 +69,27 @@ export const createMiddleware = (options: Options) => {
       return next();
     }
 
-    let page = await Promise.resolve(createPage(content, context));
+    let body: string = content;
 
-    if (page === false) {
-      return next();
+    if (createPage) {
+      let page = await Promise.resolve(createPage(content, context));
+
+      if (page === false) {
+        return next();
+      }
+
+      if (modifyPage) {
+        page = await Promise.resolve(modifyPage(page, context));
+      }
+
+      if (page === false) {
+        return next();
+      }
+
+      body = await compilePage(page);
     }
 
-    if (modifyPage) {
-      page = await Promise.resolve(modifyPage(page, context));
-    }
-
-    if (page === false) {
-      return next();
-    }
-
-    const output = await compilePage(page);
-    context.body = output;
-
+    context.body = body;
     return next();
   };
 };

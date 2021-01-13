@@ -15,7 +15,7 @@ export type Options = {
    *
    * @param context Контект запроса Koa.
    */
-  createElement: (
+  createElement?: (
     context: Context
   ) => ReactElement | false | Promise<ReactElement | false>;
 
@@ -53,6 +53,21 @@ export type Options = {
   ) => string | false | Promise<string | false>;
 
   /**
+   * Преобразует HTML-код, сгенерированный при отрисовке приложения React.
+   * Возвращает либо новый контент, с которым будут работать дальнейшие
+   * обработчики, либо `false`. Если функция возвращает `false`, то
+   * обработка текущего запроса прерывается и управление передаётся
+   * следующему middleware.
+   *
+   * @param content Код, полученный при рендере приложения.
+   * @param context Контекст запроса Koa.
+   */
+  modifyContent?: (
+    content: string,
+    context: Context
+  ) => string | false | Promise<string | false>;
+
+  /**
    * Создаёт представление страницы, в которую должно быть вставлен HTML-код,
    * сгенерированный при рендере приложения React. Если функция возвращает
    * `false`, то обработка текущего запроса прерывается и управление передаётся
@@ -61,8 +76,8 @@ export type Options = {
    * @param html HTML-код, сгенерированный при рендере приложения.
    * @param context Контекст запроса Koa.
    */
-  createPage: (
-    html: string,
+  createPage?: (
+    content: string,
     context: Context
   ) => Page | false | Promise<Page | false>;
 
