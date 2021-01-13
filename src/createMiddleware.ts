@@ -7,7 +7,7 @@ import {
 } from 'react';
 
 import { Options } from './Options';
-import { compilePage } from './compilePage';
+import { renderPage } from './renderPage';
 
 /**
  * Создаёт Koa middleware, который выполняет рендеринг приложения React.
@@ -86,7 +86,7 @@ export const createMiddleware = (options: Options = {}) => {
         return next();
       }
 
-      body = await compilePage(page);
+      body = await renderPage(page);
     }
 
     context.body = body;

@@ -103,7 +103,7 @@ const insertAfter = (source: string, regexp: RegExp, value: string) => {
  *
  * @param page Представление страницы.
  */
-export const compilePage = async (page: Page) => {
+export const renderPage = async (page: Page) => {
   let { base: content } = page;
 
   content = insertAtLast(content, /<html\b[^>]*>/i, page.htmlAttributes);
