@@ -1,6 +1,6 @@
 {
   "name": "@devim-front/koa-ssr",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Koa Middleware для Server Side Rendering приложений React",
   "main": "/index.js",
   "publishConfig": {
