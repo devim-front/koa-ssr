@@ -298,7 +298,6 @@ app.listen(8000);
 
 ## Доступные расширения
 
-- [@devim-front/koa-ssr-webpack](https://github.com/devim-front/koa-ssr-loadable-component) - добавляет middleware функционал webpack-dev-server.
 - [@devim-front/koa-ssr-loadable-component](https://github.com/devim-front/koa-ssr-loadable-component) - добавляет поддержку [@loadable/component](https://loadable-components.com/);
 - [@devim-front/koa-ssr-react-router-dom](https://github.com/devim-front/koa-ssr-react-router-dom) - добавляет поддержку [react-router-dom](https://reactrouter.com/web/guides/quick-start);
 - [@devim-front/koa-ssr-styled-components](https://github.com/devim-front/koa-ssr-styled-components) - добавляет поддержку [styled-components](https://styled-components.com/);
