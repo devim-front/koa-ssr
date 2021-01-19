@@ -7,7 +7,7 @@ import {
 } from 'react';
 
 import { Options } from './Options';
-import { renderPage } from './renderPage';
+import { renderPage as renderDefaultPage } from './renderPage';
 
 /**
  * Создаёт Koa middleware, который выполняет рендеринг приложения React.
@@ -22,6 +22,7 @@ export const createMiddleware = (options: Options = {}) => {
     modifyContent,
     createPage,
     modifyPage,
+    renderPage,
   } = options;
 
   return async (context: Context, next: Next) => {
@@ -86,10 +87,19 @@ export const createMiddleware = (options: Options = {}) => {
         return next();
       }
 
-      body = await renderPage(page);
+      const html = renderPage
+        ? await Promise.resolve(renderPage(page, context))
+        : await renderDefaultPage(page);
+
+      if (html === false) {
+        return next();
+      }
+
+      body = html;
     }
 
     context.body = body;
+
     return next();
   };
 };

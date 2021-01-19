@@ -93,4 +93,18 @@ export type Options = {
     page: Page,
     context: Context
   ) => Page | false | Promise<Page | false>;
+
+  /**
+   * Компилирует страницу в итоговый HTML-код, который будет отдан клиенту.
+   * По умолчанию для этого используется функция `renderPage` из данной
+   * библиотеки. Если функция возвращает `false`, то обработка текущего
+   * запроса прерывается и управление передаётся следующему middleware.
+   *
+   * @param page Представление страницы.
+   * @param context Контекст запроса Koa.
+   */
+  renderPage?: (
+    page: Page,
+    context: Context
+  ) => string | false | Promise<string | false>;
 };
